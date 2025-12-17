@@ -1,7 +1,7 @@
 # Tower-Defense-3D
 A basic 3D tower defense game developed in Unity as a solo project to strengthen foundational game programming skills. This project is based on a guided tutorial and covers core gameplay systems such as enemy pathfinding, tower behaviors, wave management, and UI integration. Built with Unity 6.
 
-Unity Play: https://play.unity.com/en/games/8b153f40-5012-4cc9-9779-cddabd9f8610/robot-defense
+[Playable Demo (Unity Play)](https://play.unity.com/en/games/8b153f40-5012-4cc9-9779-cddabd9f8610/robot-defense) 
 
 ## Features
 - Enemy AI with pathfinding (NavMesh-based).
