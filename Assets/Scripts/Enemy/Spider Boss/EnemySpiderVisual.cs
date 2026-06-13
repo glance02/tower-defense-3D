@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EnemySpiderVisual : EnemyVisual
 {
+    // 蜘蛛 Boss 视觉：身体上下浮动、烟雾特效，以及所有腿的落点更新。
     [Header("Leg Details")]
     public float legSpeed = 3;
     public float increaseLegSpeed = 10;
@@ -44,6 +45,7 @@ public class EnemySpiderVisual : EnemyVisual
 
     public void BrieflySpeedUpLegs()
     {
+        // EnemySpider 切换路点时调用，让腿部动画短暂加速。
         foreach (var leg in legs)
         {
             leg.SpeedUpLeg();
@@ -52,6 +54,7 @@ public class EnemySpiderVisual : EnemyVisual
 
     private void ActivateSmokeVFX()
     {
+        // 周期性播放移动烟雾。
         smokeTimer -= Time.deltaTime;
 
         if (smokeTimer < 0)
@@ -66,6 +69,7 @@ public class EnemySpiderVisual : EnemyVisual
 
     private void AnimateBody()
     {
+        // 用正弦值让身体在本地 Y 轴轻微上下浮动。
         elaspedTime += Time.deltaTime * bodyAnimSpeed;
 
         // Plus 1 to prevent the body goes below the ground (from 0 to 2)
@@ -78,6 +82,7 @@ public class EnemySpiderVisual : EnemyVisual
 
     private void UpdateSpiderLegs()
     {
+        // 每条腿自己判断是否需要迈步。
         foreach (var leg in legs)
         {
             leg.UpdateLeg();

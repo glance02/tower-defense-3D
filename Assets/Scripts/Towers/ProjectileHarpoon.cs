@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ProjectileHarpoon : MonoBehaviour
 {
+    // 鱼叉投射物：飞向指定敌人，命中后挂到敌人身上并回调塔开始持续伤害。
     private bool isAttached;
     private float speed;
     private Enemy enemy;
@@ -11,6 +12,7 @@ public class ProjectileHarpoon : MonoBehaviour
 
     void Update()
     {
+        // 已经命中后位置跟随父物体，不再主动移动。
         if (enemy == null || isAttached)
             return;
 
@@ -22,6 +24,7 @@ public class ProjectileHarpoon : MonoBehaviour
 
     public void SetupProjectile(Enemy newEnemy, float newSpeed, TowerHarpoon newTower)
     {
+        // TowerHarpoon 发射时注入目标、速度和回调引用。
         enemy = newEnemy;
         speed = newSpeed;
         tower = newTower;
@@ -29,6 +32,7 @@ public class ProjectileHarpoon : MonoBehaviour
 
     private void AttachToEnemy()
     {
+        // 命中后设置父物体，让鱼叉跟随敌人移动。
         isAttached = true;
         transform.parent = enemy.transform;
         tower.ActivateAttack();

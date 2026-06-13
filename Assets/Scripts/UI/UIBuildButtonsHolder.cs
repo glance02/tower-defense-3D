@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class UIBuildButtonsHolder : MonoBehaviour
 {
+    // 建造按钮容器：负责展开/收起菜单、数字快捷键、确认建造和旋转预览。
     [SerializeField] private float yPosOffset;
     [SerializeField] private float openAnimDuration = .1f;
     [SerializeField] private List<UIBuildButton> unlockedButtons;
@@ -29,6 +30,7 @@ public class UIBuildButtonsHolder : MonoBehaviour
 
     private void CheckBuildButtonHotkey()
     {
+        // 建造菜单打开时，数字键 1/2/3... 可以快速选择已解锁塔。
         if (isBuildMenuActive == false)
             return;
 
@@ -43,6 +45,7 @@ public class UIBuildButtonsHolder : MonoBehaviour
 
         if (lastSelectedButton != null)
         {
+            // Space/左键确认建造，Q/E 旋转当前塔预览。
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0))
             {
                 lastSelectedButton.ConfirmTowerBuilding();
@@ -59,6 +62,7 @@ public class UIBuildButtonsHolder : MonoBehaviour
 
     private void RotateTarget(Transform target, float angle)
     {
+        // 旋转前方攻击塔时，同步更新射程线方向。
         if (target == null)
             return;
 
@@ -85,6 +89,7 @@ public class UIBuildButtonsHolder : MonoBehaviour
 
     public void UpdateUnlockedButton()
     {
+        // 扫描所有按钮，把当前已解锁按钮缓存给快捷键逻辑使用。
         unlockedButtons = new List<UIBuildButton>();
 
         foreach (var button in buildButtons)
@@ -96,6 +101,7 @@ public class UIBuildButtonsHolder : MonoBehaviour
 
     public void ShowBuildButtons(bool enable)
     {
+        // BuildSlot 被选中/取消时调用，移动整个按钮条并启停按钮浮动效果。
         isBuildMenuActive = enable;
 
         float changeYOffset = isBuildMenuActive ? yPosOffset : -yPosOffset;

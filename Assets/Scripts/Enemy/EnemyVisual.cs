@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class EnemyVisual : MonoBehaviour
 {
+    // 敌人通用视觉：坡面贴合、死亡特效、隐身透明材质切换。
     [Header("Movement Details")]
     [SerializeField] private float verticalRotationSpeed;
     [SerializeField] private LayerMask roadLayer;
@@ -38,12 +39,14 @@ public class EnemyVisual : MonoBehaviour
 
     public void CreateDeathVFX()
     {
+        // 敌人被移除时由 Enemy 调用，特效本身也走对象池。
         GameObject createdDeathVFX = objectPool.Get(deathVFX, transform.position + new Vector3(0, .15f, 0), Quaternion.identity);
         createdDeathVFX.transform.localScale = new Vector3(deathVFXScale, deathVFXScale, deathVFXScale);
     }
 
     public void MakeTransparent(bool isTransparent)
     {
+        // 隐身时替换成透明材质，解除隐身时恢复 Awake 中记录的原材质。
         for (int i = 0; i < myMeshes.Length; i++)
         {
             myMeshes[i].material = isTransparent ? transparentMat : originalMats[i];
@@ -52,6 +55,7 @@ public class EnemyVisual : MonoBehaviour
 
     protected void CollectDefaultMat()
     {
+        // 记录每个 MeshRenderer 的原材质，便于从透明状态恢复。
         myMeshes = GetComponentsInChildren<MeshRenderer>();
         originalMats = new();
 
@@ -63,6 +67,7 @@ public class EnemyVisual : MonoBehaviour
 
     private void AlignWithSlope()
     {
+        // 让敌人视觉模型贴合路面坡度，但不直接改变 NavMeshAgent 所在物体的寻路方向。
         if (visuals == null)
             return;
 

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class EnemyStealth : Enemy
 {
+    // 隐身敌人：周期性让自己和附近敌人进入不可被塔锁定的状态。
     [Header("Stealth Enemy Details")]
     [SerializeField] private float hideDuration = .5f;
     [SerializeField] private ParticleSystem smokeScreenFX;
@@ -37,6 +38,7 @@ public class EnemyStealth : Enemy
 
     protected override IEnumerator DisableHideCo(float duration)
     {
+        // 被反隐/揭示效果命中后，暂时停止烟雾和群体隐身能力。
         canBeHidden = false;
         canHideEnemy = false;
         EnableSmokeScreen(false);

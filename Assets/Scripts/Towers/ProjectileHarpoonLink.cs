@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ProjectileHarpoonLink : MonoBehaviour
 {
+    // 鱼叉链条的单节表现：Mesh 表示节点，LineRenderer 连接到下一节。
     private LineRenderer lr;
     private MeshRenderer mesh;
     private ParticleSystem vfx;
@@ -27,6 +28,7 @@ public class ProjectileHarpoonLink : MonoBehaviour
 
     public void UpdateLineRenderer(ProjectileHarpoonLink startPoint, ProjectileHarpoonLink endPoint)
     {
+        // 只有相邻两节都启用时才显示连接线，避免链条尾部多余线段。
         // Only enable LineRenderer when both start and end points of the chain is enable
         lr.enabled = startPoint.CurrentlyActive() && endPoint.CurrentlyActive();
 

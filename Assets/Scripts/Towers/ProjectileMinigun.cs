@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ProjectileMinigun : MonoBehaviour
 {
+    // 机枪子弹视觉：实际命中由射线提前确定，这里负责飞到命中点后结算伤害和特效。
     [SerializeField] private GameObject onHitVFX;
 
     private float damage;
@@ -20,6 +21,7 @@ public class ProjectileMinigun : MonoBehaviour
 
     void Update()
     {
+        // isActive 防止到达目标后的伤害和回收逻辑重复执行。
         if (isActive == false)
             return;
 
@@ -40,6 +42,7 @@ public class ProjectileMinigun : MonoBehaviour
 
     public void SetupProjectile(Vector3 targetPosition, IDamagable newDamagable, float newDamage, float newSpeed, ObjectPoolManager newObjPool)
     {
+        // 对象池复用时重置目标、伤害、速度和拖尾。
         trail.Clear();
         isActive = true;
         target = targetPosition;

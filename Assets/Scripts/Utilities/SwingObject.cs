@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class SwingObject : MonoBehaviour
 {
+    // 通用摆动脚本：让物体围绕指定轴做往返摇摆。
     [Header("Swing settings")]
     [SerializeField] private float swingDegree = 10;
     [SerializeField] private float swingSpeed = 1;

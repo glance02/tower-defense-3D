@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ProjectileCannon : MonoBehaviour
 {
+    // 炮弹投射物：按初速度飞行，碰撞时造成范围伤害并播放爆炸特效。
     [SerializeField] private float damageRadius;
     [SerializeField] private GameObject VFXExplosion;
     [SerializeField] private LayerMask whatIsEnemy;
@@ -24,6 +25,7 @@ public class ProjectileCannon : MonoBehaviour
 
     public void SetupProjectile(Vector3 newVelocity, float towerDamage, ObjectPoolManager newObjPool)
     {
+        // 从对象池取出后重置拖尾、速度和伤害。
         trail.Clear();
         rb.linearVelocity = newVelocity;
         projectileDamage = towerDamage;
@@ -32,6 +34,7 @@ public class ProjectileCannon : MonoBehaviour
 
     public void DamageEnemies()
     {
+        // 爆炸点周围所有实现 IDamagable 的敌人都会受到伤害。
         Collider[] enemiesAround = Physics.OverlapSphere(transform.position, damageRadius, whatIsEnemy);
 
         foreach (Collider enemy in enemiesAround)
@@ -45,6 +48,7 @@ public class ProjectileCannon : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        // 炮弹命中任意触发器后爆炸并回收到对象池。
         DamageEnemies();
 
         objPool.Get(VFXExplosion, transform.position, Quaternion.identity);

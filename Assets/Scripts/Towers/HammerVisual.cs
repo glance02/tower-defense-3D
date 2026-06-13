@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class HammerVisual : MonoBehaviour
 {
+    // 锤塔视觉：控制锤头下砸、线缆伸缩、阀门转速和打击 VFX。
     [Header("VFX Details")]
     [SerializeField] private ParticleSystem[] vfxList;
     [Space]
@@ -27,18 +28,21 @@ public class HammerVisual : MonoBehaviour
 
     void Awake()
     {
+        // reloadDuration 用总冷却减去下砸时间，保证动画节奏匹配攻击冷却。
         towerHammer = GetComponent<TowerHammer>();
         reloadDuration = towerHammer.GetAttackCooldown() - attackDuration;
     }
 
     public void PlayAttackAnimation()
     {
+        // 新攻击开始时停止旧动画，避免多段锤击协程叠加。
         StopAllCoroutines();
         StartCoroutine(HammerAttackCo());
     }
 
     public IEnumerator HammerAttackCo()
     {
+        // 先快速下砸，播放冲击特效，再缓慢复位。
         valeRotation.AdjustRotationSpeed(250);
 
         StartCoroutine(ChangePositionCo(hammer, -attackOffsetY, attackDuration));
@@ -62,6 +66,7 @@ public class HammerVisual : MonoBehaviour
 
     private void PlayVFXs()
     {
+        // 一次攻击可能包含多个粒子系统。
         foreach (var p in vfxList)
         {
             p.Play();
@@ -70,6 +75,7 @@ public class HammerVisual : MonoBehaviour
 
     public IEnumerator ChangePositionCo(Transform obj, float yOffset, float duration = .1f)
     {
+        // 修改 localPosition，动画相对于塔模型本地空间。
         float time = 0;
 
         Vector3 initialPosition = obj.localPosition;
@@ -88,6 +94,7 @@ public class HammerVisual : MonoBehaviour
 
     public IEnumerator ChangeScaleCo(Transform obj, float newScale, float duration = .25f)
     {
+        // 用 Y 轴缩放模拟锤柄/线缆伸缩。
         float time = 0;
 
         Vector3 initialScale = obj.localScale;

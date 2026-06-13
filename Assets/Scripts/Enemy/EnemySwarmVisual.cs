@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EnemySwarmVisual : EnemyVisual
 {
+    // 群体小敌人的视觉：随机选择外观变体，并上下弹跳。
     [Header("Visual variants")]
     [SerializeField] private GameObject[] variants;
 
@@ -27,6 +28,7 @@ public class EnemySwarmVisual : EnemyVisual
 
     private void BounceEffect()
     {
+        // 使用 AnimationCurve 控制弹跳节奏，比纯 Sin 更容易调手感。
         bounceTimer += bounceSpeed * Time.deltaTime;
 
         float bounceValue = bounceCurve.Evaluate(bounceTimer % 1);
@@ -37,6 +39,7 @@ public class EnemySwarmVisual : EnemyVisual
 
     private void ChooseVisualVariant()
     {
+        // 每次生成时只启用一个随机外观。
         foreach (var option in variants)
         {
             option.SetActive(false);

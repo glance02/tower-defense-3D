@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    // 游戏内自由相机控制：右键旋转、滚轮缩放、中键/键盘平移。
     public bool canControl;
 
     [SerializeField] private float maxDistanceFromCenter;
@@ -47,6 +48,7 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        // 镜头过渡或菜单状态下会禁用玩家控制。
         if (canControl == false)
             return;
 
@@ -63,6 +65,7 @@ public class CameraController : MonoBehaviour
 
     private void HandleRotation()
     {
+        // 围绕 focusPoint 旋转，相机始终看向这个焦点。
         // Check if the right mouse button is being hold
         if (Input.GetMouseButton(1))
         {
@@ -86,6 +89,7 @@ public class CameraController : MonoBehaviour
 
     private void HandleZoom()
     {
+        // 沿相机 forward 方向推进/拉远，同时用高度限制最大最小缩放。
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
         // Determines the direction and strength of the zoom
@@ -106,6 +110,7 @@ public class CameraController : MonoBehaviour
 
     private void HandleKeyBoardMovement()
     {
+        // WASD/方向键移动，相对当前镜头朝向的水平投影。
         Vector3 targetPosition = transform.position;
         float vInput = Input.GetAxisRaw("Vertical");
         float hInput = Input.GetAxisRaw("Horizontal");
@@ -134,6 +139,7 @@ public class CameraController : MonoBehaviour
 
     private void HandleMouseMovement()
     {
+        // 中键拖动地图，移动方向与鼠标拖拽方向相反，类似 RTS 相机。
         // Store the current mouse position when press middle mouse button
         if (Input.GetMouseButtonDown(2))
             lastMousePosition = Input.mousePosition;
@@ -168,6 +174,7 @@ public class CameraController : MonoBehaviour
 
     private void HandleEdgeMovement()
     {
+        // 屏幕边缘移动逻辑目前未启用，保留给之后需要 RTS 边缘滚屏时使用。
         Vector3 mousePosition = Input.mousePosition;
         Vector3 targetPosition = transform.position;
         Vector3 flatForward = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
@@ -194,6 +201,7 @@ public class CameraController : MonoBehaviour
 
     private float GetFocusPointDistance()
     {
+        // 射线命中地面时把焦点放在命中点，否则使用最大焦距。
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, maxFocusPointDistance))
             return hit.distance;
 

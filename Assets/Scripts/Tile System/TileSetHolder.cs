@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class TileSetHolder : MonoBehaviour
 {
+    // 地块素材索引表：给 TileSlotEditor 按钮提供可切换的地块 prefab。
     [Header("Level Tile")]
     public GameObject tileLevel;
 

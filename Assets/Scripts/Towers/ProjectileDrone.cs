@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class ProjectileDrone : MonoBehaviour
 {
+    // 蜘蛛无人机投射物：启用后用 NavMeshAgent 追最近敌人，靠近后自爆。
     [SerializeField] private float damage;
     [SerializeField] private float damageRadius;
     [SerializeField] private float detonateDistance;
@@ -29,6 +30,7 @@ public class ProjectileDrone : MonoBehaviour
 
     void Update()
     {
+        // agent 还没放到 NavMesh 上时不能设置目的地。
         if (currentTarget == null || agent.enabled == false || agent.isOnNavMesh == false)
             return;
 
@@ -40,6 +42,7 @@ public class ProjectileDrone : MonoBehaviour
 
     public void Explode()
     {
+        // 自爆造成范围伤害，播放特效，然后回收自身。
         DamageEnemies();
         objectPool.Get(explosionVFX, transform.position + new Vector3(0, 0.4f, 0), Quaternion.identity);
         objectPool.Remove(gameObject);
@@ -60,6 +63,7 @@ public class ProjectileDrone : MonoBehaviour
 
     public void SetupDrone(float towerDamage)
     {
+        // 从塔上释放无人机时调用：清拖尾、设置伤害、脱离父物体并启用寻路。
         trail.Clear();
         damage = towerDamage;
         agent.enabled = true;
@@ -68,6 +72,7 @@ public class ProjectileDrone : MonoBehaviour
 
     private void UpdateClosestTarget()
     {
+        // 定时更新目标，避免每帧做 OverlapSphere。
         currentTarget = FindClosestEnemy();
     }
 

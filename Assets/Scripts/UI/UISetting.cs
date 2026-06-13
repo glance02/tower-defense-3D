@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class UISetting : MonoBehaviour
 {
+    // 设置面板：调整相机灵敏度和 AudioMixer 音量，并用 PlayerPrefs 保存。
     [Header("Keyboard Sensetivity")]
     [SerializeField] private float minKeyboardSense = 60f;
     [SerializeField] private float maxKeyboardSense = 240f;
@@ -44,6 +45,7 @@ public class UISetting : MonoBehaviour
 
     public void SFXSliderValue(float changeValue)
     {
+        // AudioMixer 使用分贝值，滑条 0-1 需要通过 log10 转换。
         float newValue = MathF.Log10(changeValue) * mixerMultiplier;
         audioMixer.SetFloat(sfxParameter, newValue);
         sfxSliderText.text = Mathf.RoundToInt(changeValue * 100) + "%";
@@ -51,6 +53,7 @@ public class UISetting : MonoBehaviour
 
     public void BGMSliderValue(float changeValue)
     {
+        // BGM 音量和 SFX 使用相同转换方式。
         float newValue = MathF.Log10(changeValue) * mixerMultiplier;
         audioMixer.SetFloat(bgmParameter, newValue);
         bgmSliderText.text = Mathf.RoundToInt(changeValue * 100) + "%";
@@ -58,6 +61,7 @@ public class UISetting : MonoBehaviour
 
     public void AdjustKeyboardSense(float changeValue)
     {
+        // 把 0-1 的滑条值映射到实际键盘移动速度范围。
         float newSense = Mathf.Lerp(minKeyboardSense, maxKeyboardSense, changeValue);
         cameraController.AdjustKeyboardMoveSpeed(newSense);
         keyboardSenseText.text = Mathf.RoundToInt(changeValue * 100) + "%";
@@ -65,6 +69,7 @@ public class UISetting : MonoBehaviour
 
     public void AdjustMouseSense(float changeValue)
     {
+        // 把 0-1 的滑条值映射到实际鼠标拖动速度范围。
         float newSense = Mathf.Lerp(minMouseSense, maxMouseSense, changeValue);
         cameraController.AdjustMouseMoveSpeed(newSense);
         mouseSenseText.text = Mathf.RoundToInt(changeValue * 100) + "%";
@@ -72,6 +77,7 @@ public class UISetting : MonoBehaviour
 
     private void OnDisable()
     {
+        // 关闭设置面板时保存当前设置。
         PlayerPrefs.SetFloat(keyboardSenseParameter, keyboardSenseSlider.value);
         PlayerPrefs.SetFloat(mouseSenseParameter, mouseSenseSlider.value);
         PlayerPrefs.SetFloat(sfxParameter, sfxSlider.value);
@@ -80,6 +86,7 @@ public class UISetting : MonoBehaviour
 
     private void OnEnable()
     {
+        // 打开设置面板时读取本地保存值；没有保存则使用默认 .6。
         keyboardSenseSlider.value = PlayerPrefs.GetFloat(keyboardSenseParameter, .6f);
         mouseSenseSlider.value = PlayerPrefs.GetFloat(mouseSenseParameter, .6f);
         sfxSlider.value = PlayerPrefs.GetFloat(sfxParameter, .6f);

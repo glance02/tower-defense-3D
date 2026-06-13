@@ -4,6 +4,7 @@ using UnityEngine.AI;
 
 public class TowerDrone : Tower
 {
+    // 无人机塔：轮流释放挂在塔上的多个无人机，自爆后再重新装填。
     [Header("Tower Drone Details")]
     [SerializeField] private float attackTimeMultiplier = .4f; // The percentage of the time used for attacking (40%)
     [SerializeField] private float reloadTimeMultiplier = .6f; // The percentage of the time used for reloading (60%)
@@ -20,6 +21,7 @@ public class TowerDrone : Tower
 
     protected override void Start()
     {
+        // 开局先在每个挂点生成待发射无人机。
         base.Start();
         InitializeSpiders();
         reloadTimeMultiplier = 1 - attackTimeMultiplier;
@@ -45,6 +47,7 @@ public class TowerDrone : Tower
 
     private void UpdateAttachPointsPosition()
     {
+        // 挂点参考物可能随模型动画移动，这里每帧同步真实挂点位置。
         for (int i = 0; i < attachPointSet.Length; i++)
         {
             attachPointSet[i].position = attachPointRefSet[i].position;
@@ -53,6 +56,7 @@ public class TowerDrone : Tower
     
     private void InitializeSpiders()
     {
+        // 预先从对象池取出无人机并挂到塔上，表现为待发射状态。
         activeDrones = new GameObject[attachPointSet.Length];
 
         for (int i = 0; i < activeDrones.Length; i++)
@@ -65,6 +69,7 @@ public class TowerDrone : Tower
 
     private IEnumerator AttackCo()
     {
+        // 每次攻击只发射一个无人机，按数组下标轮流循环。
         Transform currentWeb = webSet[droneIndex];
         Transform currentAttachPoint = attachPointSet[droneIndex];
 
@@ -89,6 +94,7 @@ public class TowerDrone : Tower
 
     public IEnumerator ChangeScaleCo(Transform obj, float newScale, float duration = .25f)
     {
+        // 用缩放模拟蛛丝/挂载装置展开和收回。
         float time = 0;
 
         Vector3 initialScale = obj.localScale;

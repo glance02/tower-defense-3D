@@ -18,6 +18,7 @@ public class WaveDetails
 
 public class WaveManager : MonoBehaviour
 {
+    // 波次管理器：根据每波配置准备敌人，控制下一波按钮，并在地图变化后重建 NavMesh。
     public EnemyPortal enemyPortal { get; private set; }
 
     [SerializeField] private GridBuilder currentGrid;
@@ -58,6 +59,7 @@ public class WaveManager : MonoBehaviour
 
     public void ActivateWaveManager()
     {
+        // GameManager 准备好关卡后，才允许玩家启动第一波。
         isGameBegun = true;
         uiInGame = gameManager.uiInGame;
         EnableNextWaveUI(true);
@@ -65,6 +67,7 @@ public class WaveManager : MonoBehaviour
 
     private void UpdateNavMeshes()
     {
+        // 开新波前重建寻路数据，保证动态地形/建造后的路径是最新的。
         foreach (var collider in flyingNavColliders)
         {
             collider.enabled = true;
@@ -88,6 +91,7 @@ public class WaveManager : MonoBehaviour
 
     public void HandleWaveCompletion(int activeEnemyCount)
     {
+        // EnemyPortal 每移除一个敌人都会回调这里；只有场上敌人清零才进入下一波判断。
         // Stop next wave when WaveManager is disabled
         if (isGameBegun == false)
             return;
@@ -112,6 +116,7 @@ public class WaveManager : MonoBehaviour
 
     public void StartNewWave()
     {
+        // 下一波按钮调用这里：先更新寻路，再把本波敌人交给传送门逐个生成。
         UpdateNavMeshes();
         GiveEnemiesToPortals();
         EnableNextWaveUI(false);
@@ -129,6 +134,7 @@ public class WaveManager : MonoBehaviour
 
     private void GiveEnemiesToPortals()
     {
+        // WaveManager 不直接生成敌人，只把“要生成的敌人列表”交给 EnemyPortal。
         enemyList = GetNewEnemies();
 
         if (enemyList == null)
@@ -148,12 +154,14 @@ public class WaveManager : MonoBehaviour
 
     public void DecreaseEnemyAmount()
     {
+        // UI 上显示的是本波剩余敌人数量。
         int remainingEnemies = enemyList.Count - gameManager.GetKilledEnemies();
         uiInGame.UpdateEnemyCountText(remainingEnemies);
     }
 
     private List<GameObject> GetNewEnemies()
     {
+        // 根据 Inspector 里配置的数量，把不同敌人 prefab 展平成一个生成列表。
         // Check if there are still more waves available
         if (waveIndex >= levelWaves.Length)
             return null;

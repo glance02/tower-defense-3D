@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ForwardAttackDisplay : MonoBehaviour
 {
+    // 给只攻击正前方的塔显示两条射程线。
     [SerializeField] private float attackRange;
     [SerializeField] private LineRenderer leftLine;
     [SerializeField] private LineRenderer rightLine;
@@ -15,6 +16,7 @@ public class ForwardAttackDisplay : MonoBehaviour
 
     public void CreateLines(bool showLines, float newRange)
     {
+        // 建造预览显示/隐藏时调用，并同步最新射程。
         leftLine.enabled = showLines;
         rightLine.enabled = showLines;
 
@@ -33,6 +35,7 @@ public class ForwardAttackDisplay : MonoBehaviour
 
     private void DrawLine(LineRenderer line)
     {
+        // 每条线从自身位置沿塔的 forward 方向延伸。
         Vector3 start = line.transform.position;
 
         // Extend the forward direction by desired distance 

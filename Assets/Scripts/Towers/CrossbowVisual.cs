@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CrossbowVisual : MonoBehaviour
 {
+    // 弩塔视觉表现：负责光束、命中特效、发光充能、弦线和转轮装填动画。
     [Header("Attack Visuals")]
     [SerializeField] private float attackVisualDur = .1f;
     [SerializeField] private LineRenderer attackLineVisual;
@@ -49,6 +50,7 @@ public class CrossbowVisual : MonoBehaviour
 
     void Awake()
     {
+        // 为当前塔创建独立材质实例，避免修改 emission 时影响其他弩塔。
         mainTower = GetComponent<TowerCrossbow>();
 
         materialInstance = new Material(meshRenderer.material);
@@ -66,6 +68,7 @@ public class CrossbowVisual : MonoBehaviour
 
     void Update()
     {
+        // 每帧刷新弦线端点和发光颜色，让视觉跟随模型运动。
         UpdateEmissionColor();
 
         UpdateStringVisual(frontLine_L, frontStartPoint_L, frontEndPoint_L);
@@ -91,6 +94,7 @@ public class CrossbowVisual : MonoBehaviour
 
     public void PlayReloadVFX(float duration)
     {
+        // 装填时间取攻击冷却的一半，用于充能和转轮复位。
         float newDuration = duration / 2;
 
         StartCoroutine(ChangeEmissionCoroutine(newDuration));
@@ -99,6 +103,7 @@ public class CrossbowVisual : MonoBehaviour
 
     private void SetupMaterialLR()
     {
+        // 让所有线条共用同一个材质实例，发光颜色保持一致。
         foreach (var line in lineRenderers)
         {
             line.material = materialInstance;
@@ -107,12 +112,14 @@ public class CrossbowVisual : MonoBehaviour
 
     private void UpdateStringVisual(LineRenderer lineRenderer, Transform startPoint, Transform endPoint)
     {
+        // 弩弦由 LineRenderer 连接两个挂点。
         lineRenderer.SetPosition(0, startPoint.position);
         lineRenderer.SetPosition(1, endPoint.position);
     }
 
     private void UpdateEmissionColor()
     {
+        // currentIntensity 越高，塔头和线条越接近 endColor。
         Color emissionColor = Color.Lerp(startColor, endColor, currentIntensity / maxIntensity);
 
         // Convert the current emission color to gamma space
@@ -124,6 +131,7 @@ public class CrossbowVisual : MonoBehaviour
 
     private IEnumerator AttackVFXCoroutine(Vector3 startPoint, Vector3 endPoint)
     {
+        // 短暂显示攻击线，模拟瞬发弩箭/能量束。
         hitPoint = endPoint;
 
         attackLineVisual.enabled = true;
@@ -137,6 +145,7 @@ public class CrossbowVisual : MonoBehaviour
 
     private IEnumerator ChangeEmissionCoroutine(float duration)
     {
+        // 攻击后逐渐把发光强度充回最大值。
         // Record the moment when this coroutine start
         float startTime = Time.time;
         float startIntensity = 0f;
@@ -156,6 +165,7 @@ public class CrossbowVisual : MonoBehaviour
 
     private IEnumerator ChangeRotorPosition(float duration)
     {
+        // 转轮从卸载位置回到装填位置，表现冷却过程。
         float startTime = Time.time;
 
         while (Time.time < startTime + duration)

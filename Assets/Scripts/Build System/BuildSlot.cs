@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 public class BuildSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
+    // 单个可建造格子：响应鼠标悬停/点击，并通知 BuildManager 当前选择。
     private UI ui;
     private TileAnimator tileAnimator;
     private BuildManager buildManager;
@@ -29,6 +30,7 @@ public class BuildSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        // 地图动画播放中或格子已不可用时，不允许选择建造。
         if (isBuildSlotAvailable == false || tileAnimator.IsGridMoving())
             return;
 
@@ -42,6 +44,7 @@ public class BuildSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
         SnapToBeforeBuildPostion();
         
+        // 先显示建造菜单，再记录选中格子；BuildManager 内部依赖这个顺序。
         // EnableBuildMenu need to be above SelectBuildSlot 
         // so the build menu can be enable correctly    
         buildManager.EnableBuildMenu();
@@ -56,6 +59,7 @@ public class BuildSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        // 鼠标移入时让格子升起，给玩家一个可交互反馈。
         if (isBuildSlotAvailable == false || tileAnimator.IsGridMoving())
             return;
 
@@ -70,6 +74,7 @@ public class BuildSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        // 鼠标离开且格子没有被选中时，恢复默认高度。
         if (isBuildSlotAvailable == false || tileAnimator.IsGridMoving())
             return;
             
@@ -86,12 +91,14 @@ public class BuildSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void SnapToBeforeBuildPostion()
     {
+        // 被选中时直接吸附到“建造预览高度”，避免动画过程造成塔预览错位。
         Vector3 targetPosition = defaultPosition + new Vector3(0, tileAnimator.GetBuildOffset(), 0);
         transform.position = targetPosition;
     }
 
     public void UnSelectTile()
     {
+        // 取消选择后恢复悬停能力。
         MoveTileDefault();
         canMoveTile = true;
     }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BuildManager : MonoBehaviour
 {
+    // 建造系统总控：管理当前选中的建造格、建塔扣费、预览材质和取消建造。
     public WaveManager waveManager;
     public GridBuilder currentGrid;
 
@@ -29,6 +30,7 @@ public class BuildManager : MonoBehaviour
         ui = FindFirstObjectByType<UI>();
         cameraEffects = FindFirstObjectByType<CameraEffects>();
 
+        // 如果后续波次会改变某些地块，就提前禁止这些位置建塔，避免塔被地形变化覆盖。
         MakeSlotNotAvailableIfNeeded(waveManager, currentGrid);
     }
 
@@ -39,6 +41,7 @@ public class BuildManager : MonoBehaviour
 
     void Update()
     {
+        // Esc 或点击非建造格区域时，取消当前建造选择。
         if (Input.GetKeyDown(KeyCode.Escape))
             CancelBuildAction();
 
@@ -66,6 +69,7 @@ public class BuildManager : MonoBehaviour
 
     public void BuildTower(GameObject towerToBuild, int towerPrice, Transform newTowerPreview)
     {
+        // UI 建造按钮调用这里：先检查金币，再在当前选中格子上生成塔。
         if (gameManager.HasEnoughCurrency(towerPrice) == false)
         {
             ui.uiInGame.ShakeCurrencyUI();
@@ -86,6 +90,7 @@ public class BuildManager : MonoBehaviour
         BuildSlot slotToUse = GetSelectedBuildSlot();
         CancelBuildAction();
 
+        // 建造完成后把格子锁定，防止同一个位置重复建塔。
         slotToUse.SnapToDefaultPosition();
         slotToUse.SetSlotAvailable(false);
 
@@ -99,6 +104,7 @@ public class BuildManager : MonoBehaviour
 
     public void MakeSlotNotAvailableIfNeeded(WaveManager waveManager, GridBuilder currentGrid)
     {
+        // 对比当前地图和未来波次地图，凡是之后会变化的格子都不允许建造。
         foreach (var wave in waveManager.GetLevelWaves())
         {
             if (wave.waveGrid == null)
@@ -127,6 +133,7 @@ public class BuildManager : MonoBehaviour
 
     public void CancelBuildAction()
     {
+        // 取消时关闭塔预览、还原格子高度，并隐藏建造按钮。
         if (selectedBuildSlot == null)
             return;
             
@@ -139,6 +146,7 @@ public class BuildManager : MonoBehaviour
 
     public void SelectBuildSlot(BuildSlot buildSlot)
     {
+        // 选中新格子前，先把上一个格子恢复。
         if (selectedBuildSlot != null)
             selectedBuildSlot.UnSelectTile();
 

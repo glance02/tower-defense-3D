@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class SpiderLegRef : MonoBehaviour
 {
+    // 蜘蛛腿落点参考：从参考物向下射线，找到地面接触点。
     [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private float contactPointRadius = 0.5f;
 

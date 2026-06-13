@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class TileSlotEditor : Editor
 {
+    // TileSlot 的自定义 Inspector：提供一键切换地块、旋转和升降的编辑器按钮。
     private GUIStyle centeredStyle;
 
     public override void OnInspectorGUI()
     {
+        // 支持多选 TileSlot，一次性批量修改多个地块。
         serializedObject.Update();
         base.OnInspectorGUI();
 
@@ -78,6 +80,7 @@ public class TileSlotEditor : Editor
     // Switch each selected tile to the new tile
     private void MakeButtonSwitchTile(string tileText, GameObject tileObject, float buttonWidth)
     {
+        // 点击按钮后把当前选中的所有 TileSlot 都替换成对应地块。
         if (GUILayout.Button(tileText, GUILayout.Width(buttonWidth)))
         {
             foreach (var target in targets)
@@ -89,6 +92,7 @@ public class TileSlotEditor : Editor
 
     private void MakeButtonRotateTile(string tileText, int direction, float buttonWidth)
     {
+        // 批量旋转选中的地块。
         if (GUILayout.Button(tileText, GUILayout.Width(buttonWidth)))
         {
             foreach (var target in targets)
@@ -100,6 +104,7 @@ public class TileSlotEditor : Editor
 
     private void MakeButtonPositionTile(string tileText, int verticalDirection, float buttonWidth)
     {
+        // 批量调整选中地块高度。
         if (GUILayout.Button(tileText, GUILayout.Width(buttonWidth)))
         {
             foreach (var target in targets)

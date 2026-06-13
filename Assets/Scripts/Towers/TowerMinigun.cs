@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class TowerMinigun : Tower
 {
+    // 机枪塔：用射线确认命中，再生成可视化子弹飞向命中点。
     [Header("Minigun Details")]
     [SerializeField] private float projectileSpeed;
     [SerializeField] private GameObject projectilePrefab;
@@ -20,6 +21,7 @@ public class TowerMinigun : Tower
 
     protected override void Attack()
     {
+        // 多个枪口轮流开火，制造连续扫射的视觉效果。
         gunPoint = gunPointSet[gunPointIndex];
         Vector3 directionToEnemy = DirectionToEnemyFrom(gunPoint);
 
@@ -45,6 +47,7 @@ public class TowerMinigun : Tower
 
     protected override void RotateTowardsEnemy()
     {
+        // 机枪模型有偏移量，所以瞄准时额外减去 rotationOffset。
         if (currentEnemy == null)
             return;
 

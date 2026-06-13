@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class TowerCrossbow : Tower
 {
+    // 弩塔：射线即时命中单体敌人，并播放光束、命中特效和装填视觉。
     private CrossbowVisual visual;
 
     protected override void Awake()
@@ -13,6 +14,7 @@ public class TowerCrossbow : Tower
 
     protected override void Attack()
     {
+        // 命中逻辑和视觉都在同一次攻击中完成。
         base.Attack();
 
         Vector3 directionToEnemy = DirectionToEnemyFrom(gunPoint);

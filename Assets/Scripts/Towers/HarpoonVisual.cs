@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class HarpoonVisual : MonoBehaviour
 {
+    // 鱼叉塔视觉：用多段 link 组成链条，并在命中敌人后挂电击特效。
     [SerializeField] private int maxLinks = 100;
     [SerializeField] private float linkDistance = .2f;
     [SerializeField] private GameObject linkPrefab;
@@ -21,6 +22,7 @@ public class HarpoonVisual : MonoBehaviour
 
     void Start()
     {
+        // 链条节点只创建一次，之后根据距离显示/隐藏。
         InitializeLinks();
         objectPool = ObjectPoolManager.instance;
     }
@@ -35,6 +37,7 @@ public class HarpoonVisual : MonoBehaviour
 
     private void InitializeLinks()
     {
+        // 预生成固定数量链条，避免攻击时频繁 Instantiate。
         for (int i = 0; i < maxLinks; i++)
         {
             ProjectileHarpoonLink newLink =
@@ -46,6 +49,7 @@ public class HarpoonVisual : MonoBehaviour
 
     private void ActivateLinksIfNeeded()
     {
+        // 根据起点到终点的距离决定需要显示多少节链条。
         Vector3 direction = (endPoint.position - startPoint.position).normalized;
         float distance = Vector3.Distance(startPoint.position, endPoint.position);
 
@@ -69,6 +73,7 @@ public class HarpoonVisual : MonoBehaviour
 
     public void EnableChainVisual(bool enable, Transform newEndPoint = null)
     {
+        // 鱼叉命中前终点是投射物连接点；关闭时终点回到枪口。
         if (enable)
             endPoint = newEndPoint;
 
@@ -81,11 +86,13 @@ public class HarpoonVisual : MonoBehaviour
 
     public void CreateElectrifyVFX(Transform targetTransform)
     {
+        // 电击特效挂到敌人身上，跟随敌人移动。
         currentVFX = objectPool.Get(onElectrifyVFX, targetTransform.position, Quaternion.identity, targetTransform);
     }
 
     private void DestroyElectrifyVFX()
     {
+        // 鱼叉攻击结束时回收电击特效。
         if (currentVFX != null)
             objectPool.Remove(currentVFX);
     }

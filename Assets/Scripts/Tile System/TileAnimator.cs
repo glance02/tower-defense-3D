@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class TileAnimator : MonoBehaviour
 {
+    // 地块动画控制器：让地图/城堡/传送门从下方升起或落下，也负责建造格小幅升降。
     [SerializeField] private float defaultMoveDuration = .1f;
 
     [Header("Build Slot Movement")]
@@ -24,6 +25,7 @@ public class TileAnimator : MonoBehaviour
 
     void Start()
     {
+        // 测试场景跳过主菜单地块入场动画。
         if (GameManager.instance.IsTestingLevel())
             return;
 
@@ -33,6 +35,7 @@ public class TileAnimator : MonoBehaviour
 
     public void MoveTile(Transform objToMove, Vector3 targetPosition, float? newDuration = null)
     {
+        // 单个物体移动工具，BuildSlot 的升降也复用这里。
         float duration = newDuration ?? defaultMoveDuration;
         StartCoroutine(MoveTileCo(objToMove, targetPosition, duration));
     }
@@ -47,6 +50,7 @@ public class TileAnimator : MonoBehaviour
 
     public void ShowCurrentGrid(GridBuilder gridToMove, bool isGridShow)
     {
+        // 根据 isGridShow 决定地图整体向上显示或向下隐藏。
         List<GameObject> objectsToMove = GetObjectsToMove(gridToMove, isGridShow);
 
         // Only apply offset on the first time the grid was loaded
@@ -68,6 +72,7 @@ public class TileAnimator : MonoBehaviour
 
     public void CollectMainSceneObjects()
     {
+        // 主菜单地图不仅包含 tile，也包含城堡、传送门等额外物体。
         mainMenuObjects.AddRange(mainSceneGrid.GetTileSetup());
         mainMenuObjects.AddRange(CollectExtraObject());
     }
@@ -83,6 +88,7 @@ public class TileAnimator : MonoBehaviour
     // Return a list of all extra object in the scene
     private List<GameObject> CollectExtraObject()
     {
+        // 这些对象需要跟着地图一起升降，保持场景结构一致。
         List<GameObject> extraObjects = new();
 
         // Find all objects in a scene, get their game object then add them to extraObjects list
@@ -94,6 +100,7 @@ public class TileAnimator : MonoBehaviour
 
     private List<GameObject> GetObjectsToMove(GridBuilder gridToMove, bool isStartWithTiles)
     {
+        // 显示时先升 tile 再升额外对象；隐藏时顺序反过来，动画更有层次。
         List<GameObject> objectsToMove = new();
         List<GameObject> extraObjects = CollectExtraObject();
 
@@ -115,6 +122,7 @@ public class TileAnimator : MonoBehaviour
 
     public IEnumerator MoveTileCo(Transform objToMove, Vector3 targetPosition, float? newDuration = null)
     {
+        // 协程移动时检查 objToMove 是否已销毁，避免切场景时空引用。
         float time = 0;
         float duration = newDuration ?? defaultMoveDuration;
 
@@ -137,6 +145,7 @@ public class TileAnimator : MonoBehaviour
 
     private IEnumerator MoveGridCo(List<GameObject> objectsToMove, float yOffset)
     {
+        // 逐个延迟移动地块，形成波浪式地图入场/退场效果。
         isGridMoving = true;
 
         foreach (var tile in objectsToMove)

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EnemySpider : Enemy
 {
+    // 蜘蛛 Boss：移动时沿路点前进，并定期对附近防御塔释放 EMP。
     [Header("EMP Attack Details")]
     [SerializeField] private float towerCheckRadius = 5;
     [SerializeField] private float empCooldown = 8;
@@ -55,6 +56,7 @@ public class EnemySpider : Enemy
 
     private void AttemptToEMP()
     {
+        // 随机选取范围内一座塔作为 EMP 目标。
         Transform target = FindRandomTower();
 
         if (target == null)

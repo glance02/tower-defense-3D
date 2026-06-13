@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CameraEffects : MonoBehaviour
 {
+    // 镜头效果控制：菜单/游戏视角切换、聚焦城堡、屏幕震动和控制权启停。
     [Header("Camera Transition")]
     [SerializeField] private float transitionDuration = 3;
     [Space]
@@ -39,6 +40,7 @@ public class CameraEffects : MonoBehaviour
 
     void Start()
     {
+        // 测试场景直接允许控制相机；正式流程先停在菜单视角。
         if (GameManager.instance.IsTestingLevel())
         {
             cameraController.EnableCamControl(true);
@@ -50,6 +52,7 @@ public class CameraEffects : MonoBehaviour
 
     public void FocusOnCastle()
     {
+        // 胜利/失败时把镜头移动到能看见城堡的位置。
         Transform castle = FindFirstObjectByType<PlayerCastle>().transform;
 
         if (castle == null)
@@ -69,6 +72,7 @@ public class CameraEffects : MonoBehaviour
 
     public void SwitchToMenuView()
     {
+        // 切回主菜单预设机位。
         if (cameraCo != null)
             StopCoroutine(cameraCo);
 
@@ -78,6 +82,7 @@ public class CameraEffects : MonoBehaviour
 
     public void SwitchToGameView()
     {
+        // 进入游戏预设机位。
         if (cameraCo != null)
             StopCoroutine(cameraCo);
 
@@ -92,6 +97,7 @@ public class CameraEffects : MonoBehaviour
 
     private IEnumerator ChangePositionAndRotation(Vector3 targetPosition, Quaternion targetRotation, float duration = 3, float delay = 0)
     {
+        // 平滑移动镜头期间禁用玩家控制，避免输入打断过渡。
         yield return new WaitForSeconds(delay);
 
         cameraController.EnableCamControl(false);
@@ -112,6 +118,7 @@ public class CameraEffects : MonoBehaviour
 
     private IEnumerator ScreenShakeFX(float duration, float magnitude)
     {
+        // 在原始位置周围随机偏移，形成短促震屏反馈。
         Vector3 originalPosition = cameraController.transform.position;
         float elapsed = 0;
 

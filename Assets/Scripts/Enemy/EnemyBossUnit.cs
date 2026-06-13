@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class EnemyBossUnit : Enemy
 {
+    // 飞行 Boss 生成的小单位：先从空中落下，落地后再启用 NavMeshAgent 前往终点。
     private Vector3 savedDestination;
     private Vector3 lastKnownBossPosition;
     private EnemyFlyingBoss myBoss;
@@ -16,6 +17,7 @@ public class EnemyBossUnit : Enemy
 
     public void SetupEnemy(Vector3 destination, EnemyFlyingBoss myNewBoss, EnemyPortal myNewPortal)
     {
+        // Boss 生成单位后调用，手动加入传送门活动列表，保证波次计数正确。
         ResetEnemy();
         ResetMovement();
 
@@ -29,6 +31,7 @@ public class EnemyBossUnit : Enemy
 
     private void ResetMovement()
     {
+        // 初始阶段让单位受重力下落，暂时禁用寻路。
         rb.useGravity = true;
         rb.isKinematic = false;
         agent.enabled = false;
@@ -38,6 +41,7 @@ public class EnemyBossUnit : Enemy
     // The gravity is enabled and kinematic is disabled by default to let the unit fall to the ground
     void OnCollisionEnter(Collision collision)
     {
+        // 碰到地面后切换成 NavMesh 移动模式。
         if (collision.collider.CompareTag("Enemy"))
             return;
 
@@ -56,6 +60,7 @@ public class EnemyBossUnit : Enemy
 
     private void SnapToBossIfNeeded()
     {
+        // 如果单位落到 NavMesh 外太远，就拉回 Boss 附近重新下落。
         if (agent.enabled && agent.isOnNavMesh == false)
         {
             if (Vector3.Distance(transform.position, lastKnownBossPosition) > 3f)

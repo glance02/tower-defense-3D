@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class UIAnimator : MonoBehaviour
 {
+    // 通用 UI 动画工具：位置、缩放、透明度和抖动反馈都集中在这里。
     [Header("UI Feedbacl - Shake Effect")]
     [SerializeField] private float shakeMagnitude;
     [SerializeField] private float shakeDuration;
@@ -15,6 +16,7 @@ public class UIAnimator : MonoBehaviour
 
     public void StartChangePosition(Transform transform, Vector3 offset, float duration = .1f)
     {
+        // 对外传 Transform 更方便，内部转 RectTransform 后播放协程。
         RectTransform rectTransform = transform.GetComponent<RectTransform>();
         StartCoroutine(ChangePositionCo(rectTransform, offset, duration));
     }
@@ -38,6 +40,7 @@ public class UIAnimator : MonoBehaviour
 
     public IEnumerator ChangePositionCo(RectTransform rectTransform, Vector3 offset, float duration = .1f)
     {
+        // anchoredPosition 适合 UI 元素在 Canvas 内移动。
         float time = 0;
 
         Vector3 initialPos = rectTransform.anchoredPosition;
@@ -55,6 +58,7 @@ public class UIAnimator : MonoBehaviour
 
     public IEnumerator ChangeScaleCo(RectTransform rectTransform, float newScale, float duration = .25f)
     {
+        // 用 unscaledDeltaTime，暂停菜单 Time.timeScale 为 0 时 UI 动画仍能播放。
         float time = 0;
         Vector3 initialScale = rectTransform.localScale;
         Vector3 targetScale = new(newScale, newScale, newScale);
@@ -71,6 +75,7 @@ public class UIAnimator : MonoBehaviour
 
     private IEnumerator ChangeColorCo(Image image, float targetAlpha, float duration)
     {
+        // 只改 alpha，保留原本 RGB 颜色。
         float time = 0;
         Color currentcolor = image.color;
         float startAlpha = currentcolor.a;
@@ -88,6 +93,7 @@ public class UIAnimator : MonoBehaviour
 
     private IEnumerator ShakeCo(RectTransform rectTransform)
     {
+        // 抖动用于金币不足、受伤等反馈，结束后恢复原位置和旋转。
         float time = 0;
         Vector3 originalPosition = rectTransform.anchoredPosition;
 

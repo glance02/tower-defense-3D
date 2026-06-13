@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SpiderLeg : MonoBehaviour
 {
+    // 蜘蛛腿移动控制：每条腿追随地面参考点，并和对侧腿交替移动。
     [Header("Movement Details")]
     [SerializeField] private float legMoveSpeed = 2.5f;
     [SerializeField] private float moveThreshold = .45f;
@@ -24,6 +25,7 @@ public class SpiderLeg : MonoBehaviour
 
     void Awake()
     {
+        // worldTargetRef 脱离蜘蛛父物体后留在世界空间，作为脚落点。
         objectPool = ObjectPoolManager.instance;
         spiderVisual = GetComponentInParent<EnemySpiderVisual>();
         worldTargetRef = Instantiate(worldTargetRef, actualTarget.position, Quaternion.identity).transform;
@@ -44,6 +46,7 @@ public class SpiderLeg : MonoBehaviour
 
     public void UpdateLeg()
     {
+        // actualTarget 是骨骼/IK 目标，始终跟随 worldTargetRef 加偏移。
         actualTarget.position = worldTargetRef.position + placementOffset;
 
         // Only move when the distance between leg contact point and target position is exceeded the desired threshold
@@ -68,6 +71,7 @@ public class SpiderLeg : MonoBehaviour
 
     private IEnumerator LegMoveCo()
     {
+        // 移动当前腿时暂时锁住对侧腿，避免两条腿同时抬起。
         oppositeLeg.CanMove(false);
 
         while (Vector3.Distance(worldTargetRef.position, legRef.ContactPoint()) > 0.1f)
@@ -81,6 +85,7 @@ public class SpiderLeg : MonoBehaviour
 
     private IEnumerator SpeedUpLegCo()
     {
+        // 蜘蛛切路点时短暂加快腿速，让移动看起来更有冲刺感。
         legMoveSpeed = spiderVisual.increaseLegSpeed;
 
         yield return new WaitForSeconds(1f);
@@ -90,6 +95,7 @@ public class SpiderLeg : MonoBehaviour
 
     private void ParentLegReference(bool isParent)
     {
+        // 对象池回收蜘蛛时，把世界参考点挂回池管理器，避免场景根节点残留。
         if (worldTargetRef == null)
             return;
 

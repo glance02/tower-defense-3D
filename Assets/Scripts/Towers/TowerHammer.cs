@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class TowerHammer : Tower
 {
+    // 锤塔：范围内有敌人时周期性砸地，对所有范围内敌人施加减速。
     [Header("Slow Modifiers")]
     [Range(0, 1)]
     [SerializeField] private float slowMultipler = .4f;
@@ -19,6 +20,7 @@ public class TowerHammer : Tower
 
     protected override void FixedUpdate()
     {
+        // 锤塔不需要锁定单个目标，只检查范围内是否至少有一个敌人。
         if (isTowerActive == false)
             return;
 
@@ -28,6 +30,7 @@ public class TowerHammer : Tower
 
     protected override void Attack()
     {
+        // 攻击动画和减速效果同步触发。
         base.Attack();
         hammerVisual.PlayAttackAnimation();
 
@@ -44,6 +47,7 @@ public class TowerHammer : Tower
 
     private List<Enemy> FindValidTargets()
     {
+        // 收集当前半径内所有敌人，锤塔是 AoE 减速。
         List<Enemy> targets = new();
         Collider[] enemiesAround = Physics.OverlapSphere(transform.position, attackRange, whatIsEnemy);
 

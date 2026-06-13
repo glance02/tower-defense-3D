@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class UIInGame : MonoBehaviour
 {
+    // 游戏内 HUD：显示血量、金币、剩余敌人、下一波按钮和胜负面板。
     [SerializeField] private TextMeshProUGUI healthPointsText;
     [SerializeField] private TextMeshProUGUI currencyText;
     [SerializeField] private TextMeshProUGUI enemyCountText;
@@ -34,6 +35,7 @@ public class UIInGame : MonoBehaviour
 
     void Update()
     {
+        // 游戏内按 Esc 打开暂停菜单。
         if (Input.GetKeyDown(KeyCode.Escape))
             ui.SwitchUIElement(uiPauseMenu.gameObject);
     }
@@ -52,12 +54,14 @@ public class UIInGame : MonoBehaviour
 
     public void UpdateHealthPointUIText(int changeValue, int maxValue)
     {
+        // 这里显示的是 Threat，数值越高代表已经漏掉的敌人越多。
         int newValue = maxValue - changeValue;
         healthPointsText.text = "Threat : " + newValue + "/" + maxValue;
     }
 
     public void ToggleNextWaveButton(bool enable)
     {
+        // 下一波按钮通过上下移动进入/离开屏幕。
         RectTransform nextWaveButtonTransform = nextWaveButtonTrans.GetComponent<RectTransform>();
         
         float yOffset = enable ? -nextWaveButtonOffset : nextWaveButtonOffset;
@@ -80,6 +84,7 @@ public class UIInGame : MonoBehaviour
 
     public void ActivateNextWave()
     {
+        // 按钮事件入口：找到当前 WaveManager 并启动下一波。
         WaveManager waveManager = FindFirstObjectByType<WaveManager>();
         waveManager.StartNewWave();
     }
